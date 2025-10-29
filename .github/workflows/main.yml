@@ -1,0 +1,14 @@
+name: main
+on:
+  workflow_dispatch:
+jobs:
+  main:
+    env:
+        GH_TOKEN: ${{github.token}}
+    name: main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -sLo cf.tar.gz https://github.com/jackrun123/cfiptest/releases/download/v1.2.8/cfiptest-v1.2.8-linux-amd64.tar.gz && tar -zxf cf.tar.gz && rm cf.tar.gz && mv cfiptest cf
+      - run: tar -zxf a.tar.gz && rm -rf a.tar.gz && ./cf -f ./a.txt -delay_url speed.cloudflare.com/cdn-cgi/trace -st 0 -dt 300 > /dev/null 2>&1
+      - run: gh release create ${{github.run_id}} ip.csv
